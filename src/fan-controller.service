@@ -1,0 +1,9 @@
+[Unit]
+Description=Fan controller
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/python /root/scripts/fan.py
+
+[Install]
+WantedBy=multi-user.target
