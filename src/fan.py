@@ -1,21 +1,23 @@
 """
 Python fan controller for Dell R410 based on CPU temperature.
 
-By perryclements/r410-fancontroller Github
+Created by perryclements/r410-fancontroller Github
 
-Based on original script by @marcusvb/r710-fancontroller (GitLab & GitHub)
+Based on original script by marcusvb/r710-fancontroller on Github
 
 """
 from subprocess import Popen, PIPE, STDOUT
 import time
 import string
 
-# Tcase, maximum temperature allowed at the processor Integrated Heat Spreader (IHS).
-Tcase = 63
+Tcase = 68    # Tcase, maximum temperature allowed at the processor Integrated Heat Spreader (IHS).
 
-sleepTime = 5
+sleepTime = 10
 celcius = 'C'
 floatDot = '.'
+user = "root"
+password = "calvin"
+ip = "192.168.x.xx"
 
 #Do a command and return the stdout of proccess
 def sendcommand(cmdIn):
@@ -26,7 +28,7 @@ def sendcommand(cmdIn):
 def ipmicmd(cmdIn):
     return sendcommand("ipmitool " + cmdIn)
 
-#Gets the CPU temperture from lm-sensors, returns the maximum temperaturre.
+#Gets the CPU tempertures from lm-sensors, returns the maximum.
 def getcputemp():
     cmd = sendcommand('sensors  -u | grep "input"')
     indexes = [pos for pos, char in enumerate(cmd) if char == floatDot]
@@ -38,6 +40,9 @@ def getcputemp():
     #return the maximum cpu temperature
     return max(cputemperatures)
 
+    #return the average cpu temperature
+    #return sum(cputemperatures) / int(len(cputemperatures))
+
 #Check if controller was in automode, if so we override to manual.
 def checkstatus(status):
     if (status == 5):
@@ -47,32 +52,32 @@ def checkstatus(status):
 def checktemps(status):
     maxCpuT = getcputemp()
 
-    if (maxCpuT <= (Tcase - 7)):
+    if (maxCpuT <= (Tcase - 9)):
         if (status != 1):
             checkstatus(status)
             ipmicmd("raw 0x30 0x30 0x02 0xff 0x18")
-            print("Setting to 3600/2400 RPM, Server is cool")
+            print("Setting to 4440 RPM, Server is cool")
         status = 1
 
-    elif(maxCpuT > (Tcase - 7) and maxCpuT <= (Tcase -5)):
+    elif(maxCpuT > (Tcase - 9) and maxCpuT <= (Tcase -7)):
         if (status != 2):
             checkstatus(status)
-            ipmicmd("raw 0x30 0x30 0x02 0xff 0x20")
-            print("Setting to 7200/2640 RPM, Server is toasty")
+            ipmicmd("raw 0x30 0x30 0x02 0xff 0x26")
+            print("Setting to 7200 RPM, Server is toasty")
         status = 2
 
-    elif(maxCpuT > (Tcase - 5) and maxCpuT <= (Tcase -3)):
+    elif(maxCpuT > (Tcase - 7) and maxCpuT <= (Tcase -5)):
         if (status != 3):
             checkstatus(status)
-            ipmicmd("raw 0x30 0x30 0x02 0xff 0x22")
-            print("Setting to 7200/2640 RPM, Server is toasty")
+            ipmicmd("raw 0x30 0x30 0x02 0xff 0x34")
+            print("Setting to 7920 RPM, Server is toasty")
         status = 3
 
-    elif(maxCpuT > (Tcase - 3) and maxCpuT <= (Tcase -1)):
+    elif(maxCpuT > (Tcase - 5) and maxCpuT <= (Tcase -2)):
         if (status != 4):
             checkstatus(status)
-            ipmicmd("raw 0x30 0x30 0x02 0xff 0x24")
-            print("Setting to 7200/2640 RPM, Server is toasty")
+            ipmicmd("raw 0x30 0x30 0x02 0xff 0x36")
+            print("Setting to 10320 RPM, Server is toasty")
         status = 4
 
     else:
@@ -93,3 +98,4 @@ def main():
         print("Sleeping for " + str(sleepTime))
 if __name__ == '__main__':
     main()
+
