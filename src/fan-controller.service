@@ -3,7 +3,8 @@ Description=Fan controller
 After=multi-user.target
 
 [Service]
-ExecStart=/usr/bin/python /root/scripts/fan.py
+ExecStart=/usr/bin/python3 /root/scripts/fan.py
+#Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
