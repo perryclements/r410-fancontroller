@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Python fan controller for Dell R410 based on CPU temperature.
 
@@ -21,7 +23,7 @@ ip = "192.168.x.xx"
 
 #Do a command and return the stdout of proccess
 def sendcommand(cmdIn):
-    p = Popen(cmdIn, shell=True, executable="/bin/bash", stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)
+    p = Popen(cmdIn, shell=True, executable="/bin/bash", stdin=PIPE, stdout=PIPE, universal_newlines = True, stderr=STDOUT, close_fds=True)
     return p.stdout.read()
 
 #Do a ipmi command, setup for the default command.
