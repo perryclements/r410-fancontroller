@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 Python fan controller for Dell R410 based on CPU temperature.
 
@@ -58,37 +56,37 @@ def checktemps(status):
         if (status != 1):
             checkstatus(status)
             ipmicmd("raw 0x30 0x30 0x02 0xff 0x18")
-            print("Setting to 4440 RPM, Server is cool")
+            print("Cpu at: " + str(maxCpuT) + " celcius, Fan set to 4440 RPM", flush=True)
         status = 1
 
     elif(maxCpuT > (Tcase - 9) and maxCpuT <= (Tcase -7)):
         if (status != 2):
             checkstatus(status)
             ipmicmd("raw 0x30 0x30 0x02 0xff 0x26")
-            print("Setting to 7200 RPM, Server is toasty")
+            print("Cpu at: " + str(maxCpuT) + " celcius, Fan set to 7200 RPM", flush=True)
         status = 2
 
     elif(maxCpuT > (Tcase - 7) and maxCpuT <= (Tcase -5)):
         if (status != 3):
             checkstatus(status)
             ipmicmd("raw 0x30 0x30 0x02 0xff 0x34")
-            print("Setting to 7920 RPM, Server is toasty")
+            print("Cpu at: " + str(maxCpuT) + " celcius, Fan set to 7920 RPM", flush=True)
         status = 3
 
     elif(maxCpuT > (Tcase - 5) and maxCpuT <= (Tcase -2)):
         if (status != 4):
             checkstatus(status)
             ipmicmd("raw 0x30 0x30 0x02 0xff 0x36")
-            print("Setting to 10320 RPM, Server is toasty")
+            print("Cpu at: " + str(maxCpuT) + " celcius, Fan set to 10320 RPM", flush=True)
         status = 4
 
     else:
         if (status != 5):
             ipmicmd("raw 0x30 0x30 0x01 0x01")
-            print("Setting to auto/loud mode, Server it too hot")
+            print("Cpu at: " + str(maxCpuT) + " celcius, Fan set to auto/loud mode, Server it too hot")
         status = 5
 
-    print("Cpu at: " + str(maxCpuT) + " celcius,  Status =" + str(status))
+    # print("Cpu at: " + str(maxCpuT) + " celcius,  Fan status =" + str(status),flush=True)
     return status
 
 #Main running function.
@@ -97,7 +95,7 @@ def main():
     while True:
         time.sleep(sleepTime)
         status = checktemps(status)
-        print("Sleeping for " + str(sleepTime))
+        #print("Sleeping for " + str(sleepTime))
 if __name__ == '__main__':
     main()
 
